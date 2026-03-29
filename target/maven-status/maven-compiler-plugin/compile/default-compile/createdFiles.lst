@@ -1,0 +1,8 @@
+logica\Cita.class
+com\mycompany\veterinariadao\JakartaRestConfiguration.class
+logica\Veterinario.class
+logica\Usuario.class
+com\mycompany\veterinariadao\resources\JakartaEE11Resource.class
+logica\HistorialMedico.class
+logica\Mascota.class
+logica\Propietario.class
