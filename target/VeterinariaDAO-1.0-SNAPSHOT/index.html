@@ -1,10 +1,66 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Start Page</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-    </body>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veterinaria - Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="login-page">
+
+    <div class="login-container">
+        <h1>Sistema Veterinario</h1>
+        <p class="login-subtitulo">Ingresa tus credenciales para continuar</p>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <div class="form-group">
+            <label for="usuario">Usuario</label>
+            <input type="text" id="usuario" placeholder="Ingresa tu usuario" />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" placeholder="Ingresa tu contraseña" />
+        </div>
+
+        <button class="btn-primary" onclick="iniciarSesion()">Ingresar</button>
+    </div>
+
+    <script>
+        // Credenciales simuladas para autenticación
+        const USUARIO_VALIDO = "admin";
+        const PASSWORD_VALIDA = "1234";
+
+        function iniciarSesion() {
+            const usuario  = document.getElementById("usuario").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const errorMsg = document.getElementById("errorMsg");
+
+            // Validar campos vacíos
+            if (!usuario || !password) {
+                errorMsg.textContent = "Todos los campos son obligatorios.";
+                errorMsg.style.display = "block";
+                return;
+            }
+
+            // Validar credenciales
+            if (usuario === USUARIO_VALIDO && password === PASSWORD_VALIDA) {
+                // Guardar sesión en localStorage
+                localStorage.setItem("sesion", JSON.stringify({ usuario: usuario }));
+                // Redirigir al dashboard
+                window.location.href = "dashboard.html";
+            } else {
+                errorMsg.textContent = "Usuario o contraseña incorrectos.";
+                errorMsg.style.display = "block";
+            }
+        }
+
+        // Permitir login con Enter
+        document.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") iniciarSesion();
+        });
+    </script>
+
+</body>
 </html>

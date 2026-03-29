@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veterinaria - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+    <body class="dashboard-page">
+
+    <!-- Barra superior -->
+    <header class="topbar">
+        <div class="topbar-title">🐾 Sistema Veterinario</div>
+        <div class="topbar-usuario">
+            <span id="nombreUsuario"></span>
+            <button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+
+        <!-- Menú lateral -->
+        <nav class="sidebar">
+            <ul>
+                <li>
+                    <button class="nav-btn active" onclick="cargarVista('mascotas', this)">
+                        Mascotas
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-btn" onclick="cargarVista('propietarios', this)">
+                        Propietarios
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-btn" onclick="cargarVista('veterinarios', this)">
+                        Veterinarios
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Área de contenido dinámico -->
+        <main class="contenido" id="contenido">
+
+            <!-- ─────────────────────────────────────────── -->
+            <!-- TEMPLATE: Fila de Mascotas                  -->
+            <!-- ─────────────────────────────────────────── -->
+            <template id="fila-mascota">
+                <tr>
+                    <td class="col-nombre"></td>
+                    <td class="col-edad"></td>
+                    <td class="col-tipo"></td>
+                    <td class="col-propietario"></td>
+                    <td>
+                        <button class="btn-editar">Editar</button>
+                        <button class="btn-eliminar">Eliminar</button>
+                    </td>
+                </tr>
+            </template>
+
+            <!-- ─────────────────────────────────────────── -->
+            <!-- TEMPLATE: Fila de Propietarios              -->
+            <!-- ─────────────────────────────────────────── -->
+            <template id="fila-propietario">
+                <tr>
+                    <td class="col-nombre"></td>
+                    <td class="col-telefono"></td>
+                    <td class="col-direccion"></td>
+                    <td>
+                        <button class="btn-editar">Editar</button>
+                        <button class="btn-eliminar">Eliminar</button>
+                    </td>
+                </tr>
+            </template>
+
+            <!-- ─────────────────────────────────────────── -->
+            <!-- TEMPLATE: Fila de Veterinarios              -->
+            <!-- ─────────────────────────────────────────── -->
+            <template id="fila-veterinario">
+                <tr>
+                    <td class="col-nombre"></td>
+                    <td class="col-especialidad"></td>
+                    <td class="col-contacto"></td>
+                    <td>
+                        <button class="btn-editar">Editar</button>
+                        <button class="btn-eliminar">Eliminar</button>
+                    </td>
+                </tr>
+            </template>
+
+            <!-- Bienvenida inicial -->
+            <div id="bienvenida">
+                <h2>Bienvenido al Sistema Veterinario</h2>
+                <p>Selecciona una opción del menú para comenzar.</p>
+            </div>
+
+            <!-- Sección: Mascotas -->
+            <div id="vista-mascotas" class="vista" style="display:none;">
+                <h2>Gestión de Mascotas</h2>
+
+                <div class="form-card">
+                    <h3 id="titulo-form-mascota">Nueva Mascota</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="mascota-nombre" placeholder="Nombre de la mascota" />
+                        </div>
+                        <div class="form-group">
+                            <label>Edad (años)</label>
+                            <input type="number" id="mascota-edad" placeholder="Edad" min="0" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select id="mascota-tipo">
+                                <option value="">-- Selecciona --</option>
+                                <option value="Perro">Perro</option>
+                                <option value="Gato">Gato</option>
+                                <option value="Ave">Ave</option>
+                                <option value="Reptil">Reptil</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Propietario</label>
+                            <input type="text" id="mascota-propietario" placeholder="Nombre del propietario" />
+                        </div>
+                    </div>
+                    <div class="error-msg" id="error-mascota"></div>
+                    <div class="form-acciones">
+                        <button class="btn-primary" onclick="guardarMascota()">Guardar</button>
+                        <button class="btn-secondary" onclick="cancelarEdicionMascota()">Cancelar</button>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Edad</th>
+                            <th>Tipo</th>
+                            <th>Propietario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-mascotas"></tbody>
+                </table>
+            </div>
+
+            <!-- Sección: Propietarios -->
+            <div id="vista-propietarios" class="vista" style="display:none;">
+                <h2>Gestión de Propietarios</h2>
+
+                <div class="form-card">
+                    <h3 id="titulo-form-propietario">Nuevo Propietario</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="propietario-nombre" placeholder="Nombre completo" />
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" id="propietario-telefono" placeholder="Teléfono" />
+                        </div>
+                        <div class="form-group">
+                            <label>Dirección</label>
+                            <input type="text" id="propietario-direccion" placeholder="Dirección" />
+                        </div>
+                    </div>
+                    <div class="error-msg" id="error-propietario"></div>
+                    <div class="form-acciones">
+                        <button class="btn-primary" onclick="guardarPropietario()">Guardar</button>
+                        <button class="btn-secondary" onclick="cancelarEdicionPropietario()">Cancelar</button>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-propietarios"></tbody>
+                </table>
+            </div>
+
+            <!-- Sección: Veterinarios -->
+            <div id="vista-veterinarios" class="vista" style="display:none;">
+                <h2>Gestión de Veterinarios</h2>
+
+                <div class="form-card">
+                    <h3 id="titulo-form-veterinario">Nuevo Veterinario</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="veterinario-nombre" placeholder="Nombre completo" />
+                        </div>
+                        <div class="form-group">
+                            <label>Especialidad</label>
+                            <input type="text" id="veterinario-especialidad" placeholder="Especialidad" />
+                        </div>
+                        <div class="form-group">
+                            <label>Contacto</label>
+                            <input type="text" id="veterinario-contacto" placeholder="Teléfono o email" />
+                        </div>
+                    </div>
+                    <div class="error-msg" id="error-veterinario"></div>
+                    <div class="form-acciones">
+                        <button class="btn-primary" onclick="guardarVeterinario()">Guardar</button>
+                        <button class="btn-secondary" onclick="cancelarEdicionVeterinario()">Cancelar</button>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Especialidad</th>
+                            <th>Contacto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-veterinarios"></tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>
